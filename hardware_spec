@@ -1,1 +1,49 @@
-hi
+#!/bin/bash
+# OS version
+echo -e "\tOS Info:\t"`cat /etc/system-release` 
+
+# KERNEL INFO 
+echo -e "\tKernel Version:\t"`uname -r`
+
+# CPU INFO
+echo -e grep -c 'processor' /proc/cpuinfo
+echo -e "\tCPU Processor Speed:\t"`awk -F':' '/^cpu MHz/ { print $2 }' /proc/cpuinfo`
+
+#RAM INFO
+echo -e "\tMemory(RAM) Info:\t"`free -mht| awk '/Mem/{print " \tTotal: " $2 "\tUsed: " $3 "\tFree: " $4}'` 
+
+echo 
+vnstat -tr > /tmp/monitor
+i=0
+in=`cat /tmp/monitor | grep rx | grep -v kbit | awk '{print $2}' | cut  -d . -f1`
+inx=$(($in + $i))
+out=`cat /tmp/monitor | grep tx | grep -v kbit | awk '{print $2}' | cut  -d . -f1`
+outx=$(($out + $i))
+
+
+# Networking - OS Firewall (Allowed Ports & Protocols)
+echo netstat -tulpn | grep LISTEN
+
+Networking - Network Firewall (Allowed Ports & Protocols)
+echo firewall-cmd --list-all-zones
+
+#Disk - Mounted/Unmounted volumes
+export MOUNT=/myfilesystem
+
+if grep -qs $MOUNT /proc/mounts; then
+  echo "It's mounted."
+else
+  echo "It's not mounted."; then
+  mount $MOUNT;
+fi
+
+#Disk type, storage
+echo df -h 
+
+#PHYSICAL VOLUME INFO
+echo pvs 
+#VOLUME GROUP INFO
+echo vgs 
+
+#LOGICAL VOLUME
+echo lvs 
